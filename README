@@ -8,3 +8,12 @@ messages using socket based system calls sendmsg/recvmsg.
 It also allows user applications to send and receive multiple messages using few
 system calls by using sendmmsg/recvmmsg.
 
+make:
+	cd kmod_turbotap
+	make
+insert:
+	sudo insert turbotap.ko
+remove:
+	sudo rmmod turbotap
+clean:
+	make clean
