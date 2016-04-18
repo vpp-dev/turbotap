@@ -45,7 +45,7 @@ struct turbotap_sock_fd {
 };
 
 static struct turbotap_interfaces {
-	struct turbotap_sock_fd *tubotap_sf[MAX_TAP_INTERFACES];
+	struct turbotap_sock_fd *turbotap_sf[MAX_TAP_INTERFACES];
 	int interfaces;
 } turbotap_interfaces;
 
@@ -58,7 +58,7 @@ static inline unsigned find_next_sock(int i, bool flag)
 
 	while (i < MAX_TAP_INTERFACES) {
 		if (count < turbotap_interfaces.interfaces &&
-			turbotap_interfaces.tubotap_sf[i] != NULL) {
+			turbotap_interfaces.turbotap_sf[i] != NULL) {
 			count++;
 			break;
 		}
@@ -119,7 +119,7 @@ static inline int get_free_interface_index(void)
 	int i = 0;
 
 	while (i < MAX_TAP_INTERFACES) {
-		if (turbotap_interfaces.tubotap_sf[i] == NULL) {
+		if (turbotap_interfaces.turbotap_sf[i] == NULL) {
 			interfaces_count_inc();
 			break;
 		}
@@ -135,7 +135,7 @@ static inline int find_interface_index(struct turbotap_sock_fd *turbotap_sf)
 	int i;
 
 	for_each_turbo_sock(i) {
-		if (turbotap_interfaces.tubotap_sf[i] == turbotap_sf) {
+		if (turbotap_interfaces.turbotap_sf[i] == turbotap_sf) {
 			break;
 		}
 	}
@@ -152,12 +152,12 @@ static inline struct turbotap_sock_fd *find_interface_from_sock(struct socket *s
 		return ERR_PTR(-EINVAL);
 
 	/*
-	 * check that tubotap_sf[at index i] must not be NULL and
+	 * check that turbotap_sf[at index i] must not be NULL and
 	 * turbotap_sock element should be equal to sock.
 	 */
 	for_each_turbo_sock(i) {
-		if (sock == turbotap_interfaces.tubotap_sf[i]->turbotap_sock) {
-			return turbotap_interfaces.tubotap_sf[i];
+		if (sock == turbotap_interfaces.turbotap_sf[i]->turbotap_sock) {
+			return turbotap_interfaces.turbotap_sf[i];
 		}
 	}
 
@@ -188,7 +188,7 @@ static struct turbotap_sock_fd *interface_alloc(void)
 	 */
         atomic_set(&turbotap_sf->refcount, 1);
 
-	turbotap_interfaces.tubotap_sf[get_free_interface_index()] = turbotap_sf;
+	turbotap_interfaces.turbotap_sf[get_free_interface_index()] = turbotap_sf;
 	return turbotap_sf;
 
 err_mem_alloc:
@@ -207,7 +207,7 @@ static void interface_free(struct turbotap_sock_fd *turbotap_sf)
 	i = find_interface_index(turbotap_sf);
 
 	if (likely(interfaces_count_dec())) {
-		turbotap_interfaces.tubotap_sf[i] = NULL;
+		turbotap_interfaces.turbotap_sf[i] = NULL;
 	}
 	kfree(turbotap_sf);
 }
@@ -463,8 +463,8 @@ void __exit turbotap_module_end(void)
 	unsigned int i;
 
 	for_each_turbo_sock(i) {
-		if (turbotap_interfaces.tubotap_sf[i]->turbotap_sock)
-			sock_release(turbotap_interfaces.tubotap_sf[i]->turbotap_sock);
+		if (turbotap_interfaces.turbotap_sf[i]->turbotap_sock)
+			sock_release(turbotap_interfaces.turbotap_sf[i]->turbotap_sock);
 	}
 
 	misc_deregister(&turbotap_tun_miscdev);
