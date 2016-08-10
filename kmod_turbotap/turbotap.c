@@ -276,25 +276,21 @@ static int turbotap_sendmsg(struct kiocb *iocb, struct socket *sock,
                             struct msghdr *m, size_t total_len)
 {
         struct turbotap_sock_fd *turbotap_sf = find_interface_from_sock(sock);
-        int len;
 
         if (unlikely(!turbotap_sf))
                 return -1;
 
-        len = turbotap_sf->tun_sock->ops->sendmsg(iocb, turbotap_sf->tun_sock, &(*m), total_len);
-        return len;
+        return turbotap_sf->tun_sock->ops->sendmsg(iocb, turbotap_sf->tun_sock, &(*m), total_len);
 }
 
 static int turbotap_recvmsg(struct kiocb *iocb, struct socket *sock, struct msghdr *m, size_t total_len, int flags)
 {
         struct turbotap_sock_fd *turbotap_sf = find_interface_from_sock(sock);
-        int len;
 
         if (unlikely(!turbotap_sf))
                 return -1;
 
-        len = turbotap_sf->tun_sock->ops->recvmsg(iocb, turbotap_sf->tun_sock, &(*m), total_len, flags);
-        return len;
+        return turbotap_sf->tun_sock->ops->recvmsg(iocb, turbotap_sf->tun_sock, &(*m), total_len, flags);
 }
 
 #else
@@ -302,30 +298,21 @@ static int turbotap_recvmsg(struct kiocb *iocb, struct socket *sock, struct msgh
 static int turbotap_sendmsg(struct socket *sock, struct msghdr *m, size_t total_len)
 {
 	struct turbotap_sock_fd *turbotap_sf = find_interface_from_sock(sock);
-	int len;
 
 	if (unlikely(!turbotap_sf))
 		return -1;
 
-	//printk(KERN_DEBUG "total number of IOV %d\n",iov_iter_count(&m->msg_iter));
-	len = turbotap_sf->tun_sock->ops->sendmsg(turbotap_sf->tun_sock, &(*m), total_len);
-	//printk(KERN_DEBUG "Sent data length %d\n", len);
-
-	return len;
+	return turbotap_sf->tun_sock->ops->sendmsg(turbotap_sf->tun_sock, &(*m), total_len);
 }
 
 static int turbotap_recvmsg(struct socket *sock, struct msghdr *m, size_t total_len, int flags)
 {
 	struct turbotap_sock_fd *turbotap_sf = find_interface_from_sock(sock);
-	int len;
 
 	if (unlikely(!turbotap_sf))
 		return -1;
 
-	len = turbotap_sf->tun_sock->ops->recvmsg(turbotap_sf->tun_sock, &(*m), total_len, flags);
-	//printk(KERN_DEBUG "Received data length %d\n", len);
-
-	return len;
+	return turbotap_sf->tun_sock->ops->recvmsg(turbotap_sf->tun_sock, &(*m), total_len, flags);
 }
 
 #endif
